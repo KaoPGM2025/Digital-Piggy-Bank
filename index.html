@@ -1,0 +1,1028 @@
+<!doctype html>
+<html lang="th" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบออมเงิน</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <script src="/_sdk/element_sdk.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&amp;family=Outfit:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet">
+  <script>
+tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      fontFamily: {
+        thai: ['Noto Sans Thai', 'sans-serif'],
+        display: ['Outfit', 'sans-serif']
+      }
+    }
+  }
+}
+</script>
+  <style>
+html, body { height: 100%; margin: 0; padding: 0; }
+body { font-family: 'Noto Sans Thai', sans-serif; }
+.page { display: none; }
+.page.active { display: flex; flex-direction: column; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 3px; }
+.glow-card { position: relative; overflow: hidden; }
+.glow-card::before { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: conic-gradient(from 0deg, transparent, rgba(99,102,241,0.1), transparent 30%); animation: rotateGlow 6s linear infinite; }
+@keyframes rotateGlow { to { transform: rotate(360deg); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+@keyframes pulse-ring { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(1.4); opacity: 0; } }
+@keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+@keyframes countUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.animate-fade-in-up { animation: fadeInUp 0.5s ease-out forwards; }
+.animate-slide-in { animation: slideIn 0.4s ease-out forwards; }
+.animate-scale-in { animation: scaleIn 0.3s ease-out forwards; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+.stagger-1 { animation-delay: 0.1s; opacity: 0; }
+.stagger-2 { animation-delay: 0.2s; opacity: 0; }
+.stagger-3 { animation-delay: 0.3s; opacity: 0; }
+.stagger-4 { animation-delay: 0.4s; opacity: 0; }
+.stagger-5 { animation-delay: 0.5s; opacity: 0; }
+.progress-bar { transition: width 1s cubic-bezier(0.4, 0, 0.2, 1); }
+.rank-badge { background: linear-gradient(135deg, var(--rank-from), var(--rank-to)); }
+.dark .glass-card { background: rgba(30, 27, 75, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(99, 102, 241, 0.2); }
+.light .glass-card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(99, 102, 241, 0.15); box-shadow: 0 4px 24px rgba(99,102,241,0.08); }
+.dark { --bg-primary: #0a0a1a; --bg-secondary: #12122a; --bg-card: rgba(30,27,75,0.7); --text-primary: #f1f5f9; --text-secondary: #94a3b8; --accent: #818cf8; --accent-hover: #6366f1; --border: rgba(99,102,241,0.2); --input-bg: rgba(30,27,75,0.5); --nav-bg: rgba(10,10,26,0.95); }
+.light { --bg-primary: #f0f0ff; --bg-secondary: #e8e8ff; --bg-card: rgba(255,255,255,0.85); --text-primary: #1e1b4b; --text-secondary: #64748b; --accent: #6366f1; --accent-hover: #4f46e5; --border: rgba(99,102,241,0.15); --input-bg: rgba(255,255,255,0.8); --nav-bg: rgba(240,240,255,0.95); }
+body { background: var(--bg-primary); color: var(--text-primary); }
+.theme-bg { background: var(--bg-primary); }
+.theme-card { background: var(--bg-card); border: 1px solid var(--border); backdrop-filter: blur(12px); }
+.theme-input { background: var(--input-bg); border: 1px solid var(--border); color: var(--text-primary); }
+.theme-text { color: var(--text-primary); }
+.theme-text-secondary { color: var(--text-secondary); }
+.theme-nav { background: var(--nav-bg); backdrop-filter: blur(12px); border-top: 1px solid var(--border); }
+.chart-bar { transition: height 0.8s cubic-bezier(0.4,0,0.2,1); }
+input::placeholder { color: var(--text-secondary); opacity: 0.6; }
+.toast { animation: fadeInUp 0.3s ease-out forwards; }
+.toast-exit { animation: fadeOutDown 0.3s ease-out forwards; }
+@keyframes fadeOutDown { from { opacity:1; transform:translateY(0); } to { opacity:0; transform:translateY(20px); } }
+.modal-overlay { background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); }
+.btn-primary { background: linear-gradient(135deg, #6366f1, #818cf8); transition: all 0.3s; }
+.btn-primary:hover { background: linear-gradient(135deg, #4f46e5, #6366f1); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(99,102,241,0.4); }
+.nav-item.active { color: #818cf8; }
+.nav-item.active .nav-dot { opacity: 1; transform: scale(1); }
+.nav-dot { opacity: 0; transform: scale(0); transition: all 0.3s; }
+</style>
+  <style>body { box-sizing: border-box; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="h-full dark">
+  <div id="app" class="h-full w-full overflow-auto theme-bg" style="max-width:480px; margin:0 auto; position:relative;"><!-- Toast Container -->
+   <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-2" style="max-width:400px;"></div><!-- Modal Container -->
+   <div id="modal-overlay" class="fixed inset-0 z-[100] modal-overlay hidden items-center justify-center p-4">
+    <div id="modal-content" class="theme-card rounded-2xl p-6 w-full max-w-sm animate-scale-in"></div>
+   </div><!-- ==================== LOGIN PAGE ==================== -->
+   <div id="page-login" class="page active h-full items-center justify-center p-6">
+    <div class="w-full max-w-sm">
+     <div class="text-center mb-8 animate-fade-in-up">
+      <div class="text-6xl mb-4 animate-float">
+       💰
+      </div>
+      <h1 id="app-title-login" class="text-3xl font-bold font-display bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">ระบบออมเงิน</h1>
+      <p class="theme-text-secondary mt-2 text-sm">เริ่มต้นออมเงินวันนี้ เพื่ออนาคตที่ดีกว่า</p>
+     </div>
+     <div class="space-y-4 animate-fade-in-up stagger-2">
+      <div><label class="text-sm theme-text-secondary mb-1 block" for="login-username">ชื่อผู้ใช้</label> <input id="login-username" type="text" placeholder="ใส่ชื่อผู้ใช้" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      </div>
+      <div><label class="text-sm theme-text-secondary mb-1 block" for="login-password">รหัสผ่าน</label>
+       <div class="relative"><input id="login-password" type="password" placeholder="ใส่รหัสผ่าน" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition pr-10"> <button onclick="togglePassword('login-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 theme-text-secondary hover:text-indigo-400 transition" aria-label="Toggle password visibility"><i data-lucide="eye" style="width:18px;height:18px;"></i></button>
+       </div>
+      </div><button onclick="handleLogin()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">เข้าสู่ระบบ</button>
+      <div class="flex justify-between text-xs"><button onclick="showPage('register')" class="text-indigo-400 hover:text-indigo-300 transition">สมัครสมาชิก</button> <button onclick="showPage('forgot')" class="theme-text-secondary hover:text-indigo-400 transition">ลืมรหัสผ่าน?</button>
+      </div>
+     </div>
+    </div>
+   </div><!-- ==================== REGISTER PAGE ==================== -->
+   <div id="page-register" class="page h-full items-center justify-center p-6">
+    <div class="w-full max-w-sm">
+     <div class="text-center mb-8 animate-fade-in-up">
+      <div class="text-5xl mb-3">
+       ✨
+      </div>
+      <h1 class="text-2xl font-bold font-display theme-text">สมัครสมาชิก</h1>
+      <p class="theme-text-secondary mt-1 text-sm">สร้างบัญชีเพื่อเริ่มออมเงิน</p>
+     </div>
+     <div class="space-y-4 animate-fade-in-up stagger-2">
+      <div><label class="text-sm theme-text-secondary mb-1 block" for="reg-name">ชื่อที่แสดง</label> <input id="reg-name" type="text" placeholder="ชื่อของคุณ" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      </div>
+      <div><label class="text-sm theme-text-secondary mb-1 block" for="reg-username">ชื่อผู้ใช้</label> <input id="reg-username" type="text" placeholder="ตั้งชื่อผู้ใช้" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      </div>
+      <div><label class="text-sm theme-text-secondary mb-1 block" for="reg-password">รหัสผ่าน</label>
+       <div class="relative"><input id="reg-password" type="password" placeholder="ตั้งรหัสผ่าน (6 ตัวขึ้นไป)" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition pr-10"> <button onclick="togglePassword('reg-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 theme-text-secondary hover:text-indigo-400 transition" aria-label="Toggle password visibility"><i data-lucide="eye" style="width:18px;height:18px;"></i></button>
+       </div>
+      </div>
+      <div><label class="text-sm theme-text-secondary mb-1 block" for="reg-confirm">ยืนยันรหัสผ่าน</label>
+       <div class="relative"><input id="reg-confirm" type="password" placeholder="ใส่รหัสผ่านอีกครั้ง" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition pr-10"> <button onclick="togglePassword('reg-confirm', this)" class="absolute right-3 top-1/2 -translate-y-1/2 theme-text-secondary hover:text-indigo-400 transition" aria-label="Toggle password visibility"><i data-lucide="eye" style="width:18px;height:18px;"></i></button>
+       </div>
+      </div>
+      <div><label class="text-sm theme-text-secondary mb-1 block" for="reg-security">คำถามรักษาความปลอดภัย</label> <input id="reg-security" type="text" placeholder="อาหารจานโปรดของคุณคืออะไร?" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      </div><button onclick="handleRegister()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">สมัครสมาชิก</button> <button onclick="showPage('login')" class="w-full text-center text-sm text-indigo-400 hover:text-indigo-300 transition">กลับเข้าสู่ระบบ</button>
+     </div>
+    </div>
+   </div><!-- ==================== FORGOT PASSWORD PAGE ==================== -->
+   <div id="page-forgot" class="page h-full items-center justify-center p-6">
+    <div class="w-full max-w-sm">
+     <div class="text-center mb-8 animate-fade-in-up">
+      <div class="text-5xl mb-3">
+       🔑
+      </div>
+      <h1 class="text-2xl font-bold font-display theme-text">ลืมรหัสผ่าน</h1>
+      <p class="theme-text-secondary mt-1 text-sm">ตอบคำถามรักษาความปลอดภัยเพื่อรีเซ็ตรหัส</p>
+     </div>
+     <div class="space-y-4 animate-fade-in-up stagger-2">
+      <div><label class="text-sm theme-text-secondary mb-1 block" for="forgot-username">ชื่อผู้ใช้</label> <input id="forgot-username" type="text" placeholder="ใส่ชื่อผู้ใช้ของคุณ" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      </div>
+      <div><label class="text-sm theme-text-secondary mb-1 block" for="forgot-answer">คำตอบคำถามรักษาความปลอดภัย</label> <input id="forgot-answer" type="text" placeholder="อาหารจานโปรดของคุณคืออะไร?" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      </div>
+      <div id="new-password-section" class="hidden space-y-4">
+       <div><label class="text-sm theme-text-secondary mb-1 block" for="forgot-newpass">รหัสผ่านใหม่</label> <input id="forgot-newpass" type="password" placeholder="ตั้งรหัสผ่านใหม่" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       </div><button onclick="handleResetPassword()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">เปลี่ยนรหัสผ่าน</button>
+      </div><button id="verify-btn" onclick="handleVerifySecurity()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">ตรวจสอบ</button> <button onclick="showPage('login')" class="w-full text-center text-sm text-indigo-400 hover:text-indigo-300 transition">กลับเข้าสู่ระบบ</button>
+     </div>
+    </div>
+   </div><!-- ==================== MAIN APP (after login) ==================== -->
+   <div id="page-app" class="page h-full" style="display:none;">
+    <div class="flex-1 overflow-auto pb-20"><!-- Dashboard Section -->
+     <section id="section-dashboard" class="app-section p-4 space-y-4"><!-- Header -->
+      <header class="flex items-center justify-between pt-2 animate-fade-in-up">
+       <div>
+        <p class="text-xs theme-text-secondary">สวัสดี 👋</p>
+        <h2 id="user-greeting" class="text-lg font-bold theme-text font-display">ผู้ใช้</h2>
+       </div>
+       <div class="flex items-center gap-2">
+        <div id="rank-badge-header" class="rank-badge px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1" style="--rank-from:#cd7f32;--rank-to:#b8860b;"><span id="rank-icon-header">🥉</span> <span id="rank-name-header">บรอนซ์</span>
+        </div>
+       </div>
+      </header><!-- Total Savings Card -->
+      <div class="glow-card theme-card rounded-2xl p-5 animate-fade-in-up stagger-1">
+       <div class="relative z-10">
+        <p class="text-xs theme-text-secondary mb-1">เงินออมทั้งหมด</p>
+        <p id="total-savings" class="text-3xl font-black font-display bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">฿0</p>
+        <div class="mt-3">
+         <div class="flex justify-between text-xs mb-1"><span class="theme-text-secondary">เป้าหมาย: <span id="goal-display-dash">฿0</span></span> <span id="goal-percent-dash" class="text-indigo-400 font-semibold">0%</span>
+         </div>
+         <div class="w-full h-2 rounded-full" style="background:var(--border);">
+          <div id="goal-progress-dash" class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 progress-bar" style="width:0%;"></div>
+         </div>
+        </div>
+       </div>
+      </div><!-- Rank Progress Card -->
+      <div class="theme-card rounded-2xl p-4 animate-fade-in-up stagger-2">
+       <div class="flex items-center justify-between mb-2">
+        <p class="text-sm font-semibold theme-text">🏆 ยศการออม</p><span id="rank-level-text" class="text-xs theme-text-secondary">บรอนซ์</span>
+       </div>
+       <div id="rank-details" class="text-xs theme-text-secondary mb-2">
+        ออมอีก ฿1,000 เพื่อเลื่อนยศ
+       </div>
+       <div class="w-full h-2 rounded-full" style="background:var(--border);">
+        <div id="rank-progress-bar" class="h-full rounded-full progress-bar" style="width:0%; background:linear-gradient(90deg,#cd7f32,#b8860b);"></div>
+       </div>
+       <div class="grid grid-cols-5 gap-1 mt-3">
+        <div class="text-center">
+         <span class="text-lg">🥉</span>
+         <p class="text-[10px] theme-text-secondary">บรอนซ์</p>
+        </div>
+        <div class="text-center">
+         <span class="text-lg">🥈</span>
+         <p class="text-[10px] theme-text-secondary">ซิลเวอร์</p>
+        </div>
+        <div class="text-center">
+         <span class="text-lg">🥇</span>
+         <p class="text-[10px] theme-text-secondary">โกลด์</p>
+        </div>
+        <div class="text-center">
+         <span class="text-lg">💎</span>
+         <p class="text-[10px] theme-text-secondary">แพลทินัม</p>
+        </div>
+        <div class="text-center">
+         <span class="text-lg">👑</span>
+         <p class="text-[10px] theme-text-secondary">รีเจนท์</p>
+        </div>
+       </div>
+      </div><!-- AI Analysis -->
+      <div class="theme-card rounded-2xl p-4 animate-fade-in-up stagger-3">
+       <div class="flex items-center gap-2 mb-2"><span class="text-lg">🤖</span>
+        <p class="text-sm font-semibold theme-text">AI วิเคราะห์การออม</p>
+       </div>
+       <p id="ai-analysis" class="text-xs theme-text-secondary leading-relaxed">เริ่มเพิ่มรายการออมเพื่อให้ AI วิเคราะห์พฤติกรรมการออมของคุณ</p>
+      </div><!-- Quick Chart -->
+      <div class="theme-card rounded-2xl p-4 animate-fade-in-up stagger-4">
+       <p class="text-sm font-semibold theme-text mb-3">📊 สรุป 7 วันล่าสุด</p>
+       <div id="mini-chart" class="flex items-end gap-1 h-24">
+        <div class="text-center text-[10px] theme-text-secondary w-full">
+         ยังไม่มีข้อมูล
+        </div>
+       </div>
+      </div><!-- Recent Transactions -->
+      <div class="theme-card rounded-2xl p-4 animate-fade-in-up stagger-5">
+       <div class="flex items-center justify-between mb-3">
+        <p class="text-sm font-semibold theme-text">📝 รายการล่าสุด</p><button onclick="switchSection('history')" class="text-xs text-indigo-400 hover:text-indigo-300 transition">ดูทั้งหมด</button>
+       </div>
+       <div id="recent-list" class="space-y-2">
+        <p class="text-xs theme-text-secondary text-center py-4">ยังไม่มีรายการออม</p>
+       </div>
+      </div>
+     </section><!-- Add Savings Section -->
+     <section id="section-add" class="app-section p-4 space-y-4 hidden">
+      <header class="pt-2 animate-fade-in-up">
+       <h2 class="text-xl font-bold theme-text font-display">➕ เพิ่มการออม</h2>
+       <p class="text-xs theme-text-secondary mt-1">บันทึกเงินออมของคุณ</p>
+      </header>
+      <div class="theme-card rounded-2xl p-5 space-y-4 animate-fade-in-up stagger-1">
+       <div><label class="text-sm theme-text-secondary mb-1 block" for="add-amount">จำนวนเงิน (บาท)</label> <input id="add-amount" type="number" min="1" placeholder="0" class="w-full theme-input rounded-xl px-4 py-3 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 transition text-center">
+       </div>
+       <div><label class="text-sm theme-text-secondary mb-1 block" for="add-date">วันที่</label> <input id="add-date" type="date" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       </div>
+       <div><label class="text-sm theme-text-secondary mb-1 block" for="add-category">หมวดหมู่</label> <select id="add-category" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"> <option value="ทั่วไป">💵 ทั่วไป</option> <option value="เงินเดือน">💼 เงินเดือน</option> <option value="โบนัส">🎁 โบนัส</option> <option value="ฟรีแลนซ์">💻 ฟรีแลนซ์</option> <option value="ของขวัญ">🎀 ของขวัญ</option> <option value="อื่นๆ">📦 อื่นๆ</option> </select>
+       </div>
+       <div><label class="text-sm theme-text-secondary mb-1 block" for="add-note">หมายเหตุ (ไม่จำเป็น)</label> <input id="add-note" type="text" placeholder="เช่น เก็บจากค่าข้าวเที่ยง" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       </div><button onclick="handleAddSaving()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">💰 บันทึกการออม</button>
+      </div>
+     </section><!-- History Section -->
+     <section id="section-history" class="app-section p-4 space-y-4 hidden">
+      <header class="pt-2 animate-fade-in-up">
+       <h2 class="text-xl font-bold theme-text font-display">📋 ประวัติการออม</h2>
+       <p class="text-xs theme-text-secondary mt-1">ดูรายการออมทั้งหมดของคุณ</p>
+      </header>
+      <div class="flex gap-2 animate-fade-in-up stagger-1"><select id="history-filter" onchange="renderHistory()" class="flex-1 theme-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"> <option value="all">ทั้งหมด</option> <option value="ทั่วไป">💵 ทั่วไป</option> <option value="เงินเดือน">💼 เงินเดือน</option> <option value="โบนัส">🎁 โบนัส</option> <option value="ฟรีแลนซ์">💻 ฟรีแลนซ์</option> <option value="ของขวัญ">🎀 ของขวัญ</option> <option value="อื่นๆ">📦 อื่นๆ</option> </select> <select id="history-sort" onchange="renderHistory()" class="theme-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"> <option value="newest">ใหม่สุด</option> <option value="oldest">เก่าสุด</option> <option value="highest">มากสุด</option> <option value="lowest">น้อยสุด</option> </select>
+      </div>
+      <div id="history-list" class="space-y-2 animate-fade-in-up stagger-2">
+       <p class="text-xs theme-text-secondary text-center py-8">ยังไม่มีรายการออม</p>
+      </div>
+     </section><!-- Goals Section -->
+     <section id="section-goals" class="app-section p-4 space-y-4 hidden">
+      <header class="pt-2 animate-fade-in-up">
+       <h2 class="text-xl font-bold theme-text font-display">🎯 เป้าหมายการออม</h2>
+       <p class="text-xs theme-text-secondary mt-1">ตั้งเป้าหมายเพื่อสร้างแรงบันดาลใจ</p>
+      </header>
+      <div class="theme-card rounded-2xl p-5 space-y-4 animate-fade-in-up stagger-1">
+       <div><label class="text-sm theme-text-secondary mb-1 block" for="goal-amount">เป้าหมายเงินออม (บาท)</label> <input id="goal-amount" type="number" min="1" placeholder="10000" class="w-full theme-input rounded-xl px-4 py-3 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 transition text-center">
+       </div>
+       <div><label class="text-sm theme-text-secondary mb-1 block" for="goal-name">ชื่อเป้าหมาย</label> <input id="goal-name" type="text" placeholder="เช่น ซื้อ iPhone, ท่องเที่ยว" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       </div><button onclick="handleSetGoal()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">🎯 ตั้งเป้าหมาย</button>
+      </div><!-- Current Goal Display -->
+      <div id="current-goal-card" class="theme-card rounded-2xl p-5 animate-fade-in-up stagger-2 hidden">
+       <div class="flex items-center justify-between mb-3">
+        <div>
+         <p class="text-sm font-semibold theme-text" id="goal-card-name">-</p>
+         <p class="text-xs theme-text-secondary">เป้าหมายปัจจุบัน</p>
+        </div><button onclick="handleDeleteGoal()" class="text-red-400 hover:text-red-300 transition p-1"><i data-lucide="trash-2" style="width:16px;height:16px;"></i></button>
+       </div>
+       <div class="text-center my-4">
+        <p class="text-3xl font-black font-display text-indigo-400" id="goal-card-current">฿0</p>
+        <p class="text-xs theme-text-secondary mt-1">จาก <span id="goal-card-target">฿0</span></p>
+       </div>
+       <div class="w-full h-3 rounded-full mb-2" style="background:var(--border);">
+        <div id="goal-card-progress" class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 progress-bar" style="width:0%;"></div>
+       </div>
+       <p id="goal-card-percent" class="text-center text-sm font-bold text-indigo-400">0%</p>
+      </div>
+     </section><!-- Report Section -->
+     <section id="section-report" class="app-section p-4 space-y-4 hidden">
+      <header class="pt-2 animate-fade-in-up">
+       <h2 class="text-xl font-bold theme-text font-display">📊 รายงาน / กราฟ</h2>
+       <p class="text-xs theme-text-secondary mt-1">ดูสถิติการออมของคุณ</p>
+      </header>
+      <div class="flex gap-2 animate-fade-in-up stagger-1"><button onclick="setReportMode('daily')" id="btn-daily" class="flex-1 btn-primary text-white rounded-xl py-2 text-xs font-semibold">รายวัน</button> <button onclick="setReportMode('monthly')" id="btn-monthly" class="flex-1 theme-card rounded-xl py-2 text-xs font-semibold theme-text">รายเดือน</button>
+      </div><!-- Stats Cards -->
+      <div class="grid grid-cols-2 gap-3 animate-fade-in-up stagger-2">
+       <div class="theme-card rounded-xl p-3 text-center">
+        <p class="text-[10px] theme-text-secondary">ออมทั้งหมด</p>
+        <p id="stat-total" class="text-lg font-bold text-indigo-400 font-display">฿0</p>
+       </div>
+       <div class="theme-card rounded-xl p-3 text-center">
+        <p class="text-[10px] theme-text-secondary">จำนวนครั้ง</p>
+        <p id="stat-count" class="text-lg font-bold text-purple-400 font-display">0</p>
+       </div>
+       <div class="theme-card rounded-xl p-3 text-center">
+        <p class="text-[10px] theme-text-secondary">เฉลี่ยต่อครั้ง</p>
+        <p id="stat-avg" class="text-lg font-bold text-green-400 font-display">฿0</p>
+       </div>
+       <div class="theme-card rounded-xl p-3 text-center">
+        <p class="text-[10px] theme-text-secondary">สูงสุด</p>
+        <p id="stat-max" class="text-lg font-bold text-amber-400 font-display">฿0</p>
+       </div>
+      </div><!-- Chart -->
+      <div class="theme-card rounded-2xl p-4 animate-fade-in-up stagger-3">
+       <p class="text-sm font-semibold theme-text mb-3" id="chart-title">กราฟรายวัน (7 วันล่าสุด)</p>
+       <div id="report-chart" class="flex items-end gap-2 h-40">
+        <div class="text-center text-xs theme-text-secondary w-full py-8">
+         ยังไม่มีข้อมูล
+        </div>
+       </div>
+      </div><!-- Category Breakdown -->
+      <div class="theme-card rounded-2xl p-4 animate-fade-in-up stagger-4">
+       <p class="text-sm font-semibold theme-text mb-3">📂 แยกตามหมวดหมู่</p>
+       <div id="category-breakdown" class="space-y-2">
+        <p class="text-xs theme-text-secondary text-center py-4">ยังไม่มีข้อมูล</p>
+       </div>
+      </div>
+     </section><!-- Settings Section -->
+     <section id="section-settings" class="app-section p-4 space-y-4 hidden">
+      <header class="pt-2 animate-fade-in-up">
+       <h2 class="text-xl font-bold theme-text font-display">⚙️ ตั้งค่า</h2>
+       <p class="text-xs theme-text-secondary mt-1">จัดการบัญชีและการตั้งค่า</p>
+      </header><!-- Profile Card -->
+      <div class="theme-card rounded-2xl p-5 space-y-4 animate-fade-in-up stagger-1">
+       <p class="text-sm font-semibold theme-text">👤 ข้อมูลผู้ใช้</p>
+       <div><label class="text-xs theme-text-secondary mb-1 block" for="settings-name">ชื่อที่แสดง</label> <input id="settings-name" type="text" class="w-full theme-input rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       </div><button onclick="handleUpdateProfile()" class="w-full btn-primary text-white rounded-xl py-2 text-sm font-semibold">บันทึกการเปลี่ยนแปลง</button>
+      </div><!-- Theme Toggle -->
+      <div class="theme-card rounded-2xl p-5 animate-fade-in-up stagger-2">
+       <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3"><span class="text-xl" id="theme-icon">🌙</span>
+         <div>
+          <p class="text-sm font-semibold theme-text">โหมดสี</p>
+          <p class="text-xs theme-text-secondary" id="theme-label">โหมดมืด</p>
+         </div>
+        </div><button onclick="toggleTheme()" class="relative w-12 h-6 rounded-full transition-colors" id="theme-toggle-btn" style="background:var(--accent);">
+         <div id="theme-toggle-dot" class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform shadow" style="transform:translateX(24px);"></div></button>
+       </div>
+      </div><!-- Change Password -->
+      <div class="theme-card rounded-2xl p-5 space-y-4 animate-fade-in-up stagger-3">
+       <p class="text-sm font-semibold theme-text">🔒 เปลี่ยนรหัสผ่าน</p>
+       <div><label class="text-xs theme-text-secondary mb-1 block" for="settings-oldpass">รหัสผ่านเดิม</label> <input id="settings-oldpass" type="password" placeholder="ใส่รหัสผ่านเดิม" class="w-full theme-input rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       </div>
+       <div><label class="text-xs theme-text-secondary mb-1 block" for="settings-newpass">รหัสผ่านใหม่</label> <input id="settings-newpass" type="password" placeholder="ใส่รหัสผ่านใหม่" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       </div><button onclick="handleChangePassword()" class="w-full btn-primary text-white rounded-xl py-2 text-sm font-semibold">เปลี่ยนรหัสผ่าน</button>
+      </div><!-- Danger Zone -->
+      <div class="theme-card rounded-2xl p-5 space-y-3 animate-fade-in-up stagger-4 border-red-500/20">
+       <p class="text-sm font-semibold text-red-400">⚠️ โซนอันตราย</p><button onclick="handleResetData()" class="w-full border border-red-500/30 text-red-400 rounded-xl py-2 text-sm font-semibold hover:bg-red-500/10 transition">ล้างข้อมูลทั้งหมด</button> <button onclick="handleLogout()" class="w-full border border-red-500/30 text-red-400 rounded-xl py-2 text-sm font-semibold hover:bg-red-500/10 transition">ออกจากระบบ</button>
+      </div>
+     </section>
+    </div><!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full theme-nav py-2 px-2 z-50" style="max-width:480px;" aria-label="Main navigation">
+     <div class="flex justify-around items-center"><button onclick="switchSection('dashboard')" class="nav-item active flex flex-col items-center gap-0.5 p-1 transition-colors" data-section="dashboard"> <i data-lucide="home" style="width:20px;height:20px;"></i> <span class="text-[10px]">หน้าหลัก</span>
+       <div class="nav-dot w-1 h-1 rounded-full bg-indigo-400"></div></button> <button onclick="switchSection('add')" class="nav-item flex flex-col items-center gap-0.5 p-1 theme-text-secondary transition-colors" data-section="add"> <i data-lucide="plus-circle" style="width:20px;height:20px;"></i> <span class="text-[10px]">เพิ่ม</span>
+       <div class="nav-dot w-1 h-1 rounded-full bg-indigo-400"></div></button> <button onclick="switchSection('history')" class="nav-item flex flex-col items-center gap-0.5 p-1 theme-text-secondary transition-colors" data-section="history"> <i data-lucide="list" style="width:20px;height:20px;"></i> <span class="text-[10px]">ประวัติ</span>
+       <div class="nav-dot w-1 h-1 rounded-full bg-indigo-400"></div></button> <button onclick="switchSection('goals')" class="nav-item flex flex-col items-center gap-0.5 p-1 theme-text-secondary transition-colors" data-section="goals"> <i data-lucide="target" style="width:20px;height:20px;"></i> <span class="text-[10px]">เป้าหมาย</span>
+       <div class="nav-dot w-1 h-1 rounded-full bg-indigo-400"></div></button> <button onclick="switchSection('report')" class="nav-item flex flex-col items-center gap-0.5 p-1 theme-text-secondary transition-colors" data-section="report"> <i data-lucide="bar-chart-3" style="width:20px;height:20px;"></i> <span class="text-[10px]">รายงาน</span>
+       <div class="nav-dot w-1 h-1 rounded-full bg-indigo-400"></div></button> <button onclick="switchSection('settings')" class="nav-item flex flex-col items-center gap-0.5 p-1 theme-text-secondary transition-colors" data-section="settings"> <i data-lucide="settings" style="width:20px;height:20px;"></i> <span class="text-[10px]">ตั้งค่า</span>
+       <div class="nav-dot w-1 h-1 rounded-full bg-indigo-400"></div></button>
+     </div>
+    </nav>
+   </div>
+  </div>
+  <script>
+// ============ STATE ============
+let appState = {
+  users: JSON.parse(localStorage.getItem('savings_users') || '{}'),
+  currentUser: localStorage.getItem('savings_current_user') || null,
+  theme: localStorage.getItem('savings_theme') || 'dark'
+};
+
+function getUserData() {
+  if (!appState.currentUser) return { savings: [], goal: null, name: '' };
+  return appState.users[appState.currentUser] || { savings: [], goal: null, name: '' };
+}
+function saveUserData(data) {
+  if (!appState.currentUser) return;
+  appState.users[appState.currentUser] = data;
+  localStorage.setItem('savings_users', JSON.stringify(appState.users));
+}
+function saveState() {
+  localStorage.setItem('savings_users', JSON.stringify(appState.users));
+  localStorage.setItem('savings_current_user', appState.currentUser || '');
+  localStorage.setItem('savings_theme', appState.theme);
+}
+
+// ============ TOAST ============
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  const bg = type === 'success' ? 'bg-green-500' : type === 'error' ? 'bg-red-500' : 'bg-indigo-500';
+  const icon = type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️';
+  toast.className = `toast ${bg} text-white px-4 py-3 rounded-xl text-sm font-semibold shadow-lg flex items-center gap-2`;
+  toast.innerHTML = `<span>${icon}</span><span>${message}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => { toast.classList.add('toast-exit'); setTimeout(() => toast.remove(), 300); }, 2500);
+}
+
+// ============ MODAL ============
+function showModal(title, message, actions) {
+  const overlay = document.getElementById('modal-overlay');
+  const content = document.getElementById('modal-content');
+  let html = `<h3 class="text-lg font-bold theme-text mb-2">${title}</h3><p class="text-sm theme-text-secondary mb-4">${message}</p><div class="flex gap-2">`;
+  actions.forEach(a => {
+    const cls = a.danger ? 'bg-red-500 hover:bg-red-600 text-white' : a.primary ? 'btn-primary text-white' : 'theme-input theme-text';
+    html += `<button onclick="${a.action}" class="${cls} flex-1 rounded-xl py-2 text-sm font-semibold transition">${a.label}</button>`;
+  });
+  html += '</div>';
+  content.innerHTML = html;
+  overlay.classList.remove('hidden');
+  overlay.classList.add('flex');
+}
+function hideModal() {
+  const overlay = document.getElementById('modal-overlay');
+  overlay.classList.add('hidden');
+  overlay.classList.remove('flex');
+}
+
+// ============ PAGES ============
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
+  const el = document.getElementById('page-' + page);
+  if (el) { el.classList.add('active'); el.style.display = 'flex'; }
+  lucide.createIcons();
+}
+
+function switchSection(section) {
+  document.querySelectorAll('.app-section').forEach(s => s.classList.add('hidden'));
+  const el = document.getElementById('section-' + section);
+  if (el) el.classList.remove('hidden');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    n.classList.remove('active');
+    n.classList.add('theme-text-secondary');
+  });
+  const navBtn = document.querySelector(`.nav-item[data-section="${section}"]`);
+  if (navBtn) { navBtn.classList.add('active'); navBtn.classList.remove('theme-text-secondary'); }
+  if (section === 'dashboard') refreshDashboard();
+  if (section === 'history') renderHistory();
+  if (section === 'goals') renderGoals();
+  if (section === 'report') renderReport();
+  if (section === 'settings') { document.getElementById('settings-name').value = getUserData().name || ''; }
+  if (section === 'add') { document.getElementById('add-date').value = new Date().toISOString().split('T')[0]; }
+  lucide.createIcons();
+}
+
+// ============ TOGGLE PASSWORD ============
+function togglePassword(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (input.type === 'password') { input.type = 'text'; btn.innerHTML = '<i data-lucide="eye-off" style="width:18px;height:18px;"></i>'; }
+  else { input.type = 'password'; btn.innerHTML = '<i data-lucide="eye" style="width:18px;height:18px;"></i>'; }
+  lucide.createIcons();
+}
+
+// ============ AUTH ============
+function handleRegister() {
+  const name = document.getElementById('reg-name').value.trim();
+  const username = document.getElementById('reg-username').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const confirm = document.getElementById('reg-confirm').value;
+  const security = document.getElementById('reg-security').value.trim();
+  if (!name || !username || !password || !security) { showToast('กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
+  if (password.length < 6) { showToast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว', 'error'); return; }
+  if (password !== confirm) { showToast('รหัสผ่านไม่ตรงกัน', 'error'); return; }
+  if (appState.users[username]) { showToast('ชื่อผู้ใช้นี้ถูกใช้แล้ว', 'error'); return; }
+  appState.users[username] = { name, password, security: security.toLowerCase(), savings: [], goal: null };
+  saveState();
+  showToast('สมัครสมาชิกสำเร็จ! 🎉');
+  showPage('login');
+}
+
+function handleLogin() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  if (!username || !password) { showToast('กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
+  const user = appState.users[username];
+  if (!user || user.password !== password) { showToast('ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง', 'error'); return; }
+  appState.currentUser = username;
+  saveState();
+  showToast(`ยินดีต้อนรับ ${user.name}! 💰`);
+  enterApp();
+}
+
+function handleVerifySecurity() {
+  const username = document.getElementById('forgot-username').value.trim();
+  const answer = document.getElementById('forgot-answer').value.trim().toLowerCase();
+  if (!username || !answer) { showToast('กรุณากรอกข้อมูลให้ครบ', 'error'); return; }
+  const user = appState.users[username];
+  if (!user) { showToast('ไม่พบชื่อผู้ใช้นี้', 'error'); return; }
+  if (user.security !== answer) { showToast('คำตอบไม่ถูกต้อง', 'error'); return; }
+  document.getElementById('new-password-section').classList.remove('hidden');
+  document.getElementById('verify-btn').classList.add('hidden');
+  showToast('ยืนยันสำเร็จ! ตั้งรหัสผ่านใหม่ได้เลย', 'info');
+}
+
+function handleResetPassword() {
+  const username = document.getElementById('forgot-username').value.trim();
+  const newpass = document.getElementById('forgot-newpass').value;
+  if (newpass.length < 6) { showToast('รหัสผ่านต้องมีอย่างน้อย 6 ตัว', 'error'); return; }
+  appState.users[username].password = newpass;
+  saveState();
+  showToast('เปลี่ยนรหัสผ่านสำเร็จ! 🔑');
+  document.getElementById('new-password-section').classList.add('hidden');
+  document.getElementById('verify-btn').classList.remove('hidden');
+  showPage('login');
+}
+
+function handleLogout() {
+  showModal('ออกจากระบบ', 'คุณต้องการออกจากระบบหรือไม่?', [
+    { label: 'ยกเลิก', action: 'hideModal()' },
+    { label: 'ออกจากระบบ', action: 'confirmLogout()', danger: true }
+  ]);
+}
+function confirmLogout() {
+  hideModal();
+  appState.currentUser = null;
+  saveState();
+  showPage('login');
+  showToast('ออกจากระบบแล้ว');
+}
+
+function enterApp() {
+  showPage('app');
+  document.getElementById('page-app').style.display = 'flex';
+  switchSection('dashboard');
+  applyTheme();
+}
+
+// ============ THEME ============
+function applyTheme() {
+  const body = document.body;
+  const app = document.getElementById('app');
+  if (appState.theme === 'dark') {
+    body.classList.add('dark'); body.classList.remove('light');
+    app.classList.add('dark'); app.classList.remove('light');
+    document.getElementById('theme-icon').textContent = '🌙';
+    document.getElementById('theme-label').textContent = 'โหมดมืด';
+    document.getElementById('theme-toggle-dot').style.transform = 'translateX(24px)';
+  } else {
+    body.classList.remove('dark'); body.classList.add('light');
+    app.classList.remove('dark'); app.classList.add('light');
+    document.getElementById('theme-icon').textContent = '☀️';
+    document.getElementById('theme-label').textContent = 'โหมดสว่าง';
+    document.getElementById('theme-toggle-dot').style.transform = 'translateX(0)';
+  }
+}
+function toggleTheme() {
+  appState.theme = appState.theme === 'dark' ? 'light' : 'dark';
+  saveState();
+  applyTheme();
+  showToast(appState.theme === 'dark' ? 'เปลี่ยนเป็นโหมดมืด 🌙' : 'เปลี่ยนเป็นโหมดสว่าง ☀️');
+}
+
+// ============ RANKS ============
+const RANKS = [
+  { name: 'บรอนซ์', icon: '🥉', min: 0, max: 1000, from: '#cd7f32', to: '#b8860b' },
+  { name: 'ซิลเวอร์', icon: '🥈', min: 1000, max: 5000, from: '#c0c0c0', to: '#a8a8a8' },
+  { name: 'โกลด์', icon: '🥇', min: 5000, max: 20000, from: '#ffd700', to: '#daa520' },
+  { name: 'แพลทินัม', icon: '💎', min: 20000, max: 100000, from: '#40e0d0', to: '#00ced1' },
+  { name: 'รีเจนท์', icon: '👑', min: 100000, max: Infinity, from: '#ff6b6b', to: '#ee5a24' }
+];
+
+function getRank(total) {
+  for (let i = RANKS.length - 1; i >= 0; i--) {
+    if (total >= RANKS[i].min) return { ...RANKS[i], index: i };
+  }
+  return { ...RANKS[0], index: 0 };
+}
+
+function updateRankDisplay(total) {
+  const rank = getRank(total);
+  document.getElementById('rank-icon-header').textContent = rank.icon;
+  document.getElementById('rank-name-header').textContent = rank.name;
+  document.getElementById('rank-badge-header').style.setProperty('--rank-from', rank.from);
+  document.getElementById('rank-badge-header').style.setProperty('--rank-to', rank.to);
+  document.getElementById('rank-level-text').textContent = rank.name;
+  const nextRank = rank.index < RANKS.length - 1 ? RANKS[rank.index + 1] : null;
+  if (nextRank) {
+    const progress = ((total - rank.min) / (nextRank.min - rank.min)) * 100;
+    document.getElementById('rank-progress-bar').style.width = Math.min(progress, 100) + '%';
+    document.getElementById('rank-progress-bar').style.background = `linear-gradient(90deg,${rank.from},${nextRank.from})`;
+    document.getElementById('rank-details').textContent = `ออมอีก ฿${formatNumber(nextRank.min - total)} เพื่อเลื่อนเป็น${nextRank.name}`;
+  } else {
+    document.getElementById('rank-progress-bar').style.width = '100%';
+    document.getElementById('rank-progress-bar').style.background = `linear-gradient(90deg,${rank.from},${rank.to})`;
+    document.getElementById('rank-details').textContent = '🎉 คุณอยู่ยศสูงสุดแล้ว!';
+  }
+}
+
+// ============ HELPERS ============
+function formatNumber(n) { return Number(n).toLocaleString('th-TH'); }
+function formatCurrency(n) { return '฿' + formatNumber(n); }
+
+// ============ ADD SAVINGS ============
+function handleAddSaving() {
+  const amount = parseFloat(document.getElementById('add-amount').value);
+  const date = document.getElementById('add-date').value;
+  const category = document.getElementById('add-category').value;
+  const note = document.getElementById('add-note').value.trim();
+  if (!amount || amount <= 0) { showToast('กรุณาใส่จำนวนเงินที่ถูกต้อง', 'error'); return; }
+  if (!date) { showToast('กรุณาเลือกวันที่', 'error'); return; }
+  const data = getUserData();
+  data.savings.push({ id: Date.now().toString(), amount, date, category, note, createdAt: new Date().toISOString() });
+  saveUserData(data);
+  document.getElementById('add-amount').value = '';
+  document.getElementById('add-note').value = '';
+  showToast(`บันทึก ${formatCurrency(amount)} สำเร็จ! 💰`);
+  switchSection('dashboard');
+}
+
+// ============ DASHBOARD ============
+function refreshDashboard() {
+  const data = getUserData();
+  const total = data.savings.reduce((s, i) => s + i.amount, 0);
+  document.getElementById('user-greeting').textContent = data.name || 'ผู้ใช้';
+  document.getElementById('total-savings').textContent = formatCurrency(total);
+  updateRankDisplay(total);
+  // Goal progress
+  if (data.goal) {
+    const pct = Math.min((total / data.goal.amount) * 100, 100);
+    document.getElementById('goal-display-dash').textContent = formatCurrency(data.goal.amount);
+    document.getElementById('goal-percent-dash').textContent = pct.toFixed(1) + '%';
+    document.getElementById('goal-progress-dash').style.width = pct + '%';
+  } else {
+    document.getElementById('goal-display-dash').textContent = 'ยังไม่ตั้ง';
+    document.getElementById('goal-percent-dash').textContent = '-';
+    document.getElementById('goal-progress-dash').style.width = '0%';
+  }
+  // AI Analysis
+  updateAIAnalysis(data, total);
+  // Mini chart
+  renderMiniChart(data.savings);
+  // Recent list
+  renderRecentList(data.savings);
+}
+
+function updateAIAnalysis(data, total) {
+  const el = document.getElementById('ai-analysis');
+  const savings = data.savings;
+  if (savings.length === 0) { el.textContent = '🔍 เริ่มเพิ่มรายการออมเพื่อให้ AI วิเคราะห์พฤติกรรมการออมของคุณ'; return; }
+  const avg = total / savings.length;
+  const rank = getRank(total);
+  const cats = {};
+  savings.forEach(s => { cats[s.category] = (cats[s.category] || 0) + s.amount; });
+  const topCat = Object.entries(cats).sort((a, b) => b[1] - a[1])[0];
+  const recent7 = savings.filter(s => { const d = new Date(s.date); const now = new Date(); return (now - d) / 86400000 <= 7; });
+  const prev7 = savings.filter(s => { const d = new Date(s.date); const now = new Date(); const diff = (now - d) / 86400000; return diff > 7 && diff <= 14; });
+  const recent7Total = recent7.reduce((s, i) => s + i.amount, 0);
+  const prev7Total = prev7.reduce((s, i) => s + i.amount, 0);
+  let analysis = `📈 คุณออมเฉลี่ย ${formatCurrency(Math.round(avg))} ต่อครั้ง (${savings.length} ครั้ง)\n`;
+  analysis += `🏆 ยศปัจจุบัน: ${rank.icon} ${rank.name}\n`;
+  analysis += `📂 หมวดหมู่ที่ออมมากสุด: ${topCat[0]} (${formatCurrency(topCat[1])})\n`;
+  if (prev7Total > 0) {
+    const change = ((recent7Total - prev7Total) / prev7Total * 100).toFixed(0);
+    analysis += change >= 0 ? `📊 การออม 7 วันล่าสุดเพิ่มขึ้น ${change}% จากสัปดาห์ก่อน ✨` : `📊 การออม 7 วันล่าสุดลดลง ${Math.abs(change)}% จากสัปดาห์ก่อน — พยายามต่อนะ! 💪`;
+  } else if (recent7.length > 0) {
+    analysis += `✨ คุณออมไป ${formatCurrency(recent7Total)} ใน 7 วันล่าสุด — เยี่ยมมาก!`;
+  } else {
+    analysis += `💡 คุณยังไม่ได้ออมเงินใน 7 วันที่ผ่านมา ลองตั้งเตือนตัวเองดูนะ!`;
+  }
+  if (data.goal) {
+    const pct = (total / data.goal.amount * 100).toFixed(1);
+    const remaining = data.goal.amount - total;
+    if (remaining <= 0) { analysis += `\n🎉 คุณบรรลุเป้าหมาย "${data.goal.name}" แล้ว! เก่งมาก!`; }
+    else { analysis += `\n🎯 เป้าหมาย "${data.goal.name}": ${pct}% — เหลืออีก ${formatCurrency(remaining)}`; }
+  }
+  el.textContent = analysis;
+}
+
+function renderMiniChart(savings) {
+  const container = document.getElementById('mini-chart');
+  if (savings.length === 0) { container.innerHTML = '<div class="text-center text-[10px] theme-text-secondary w-full">ยังไม่มีข้อมูล</div>'; return; }
+  const days = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    const key = d.toISOString().split('T')[0];
+    const dayName = ['อา','จ','อ','พ','พฤ','ศ','ส'][d.getDay()];
+    const sum = savings.filter(s => s.date === key).reduce((a, b) => a + b.amount, 0);
+    days.push({ key, dayName, sum });
+  }
+  const maxVal = Math.max(...days.map(d => d.sum), 1);
+  container.innerHTML = days.map(d => {
+    const h = d.sum > 0 ? Math.max((d.sum / maxVal) * 80, 4) : 2;
+    return `<div class="flex-1 flex flex-col items-center justify-end h-full gap-1">
+      ${d.sum > 0 ? `<span class="text-[9px] text-indigo-400 font-bold">${formatNumber(d.sum)}</span>` : ''}
+      <div class="w-full rounded-t-md chart-bar bg-gradient-to-t from-indigo-600 to-indigo-400" style="height:${h}%;min-height:2px;"></div>
+      <span class="text-[9px] theme-text-secondary">${d.dayName}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderRecentList(savings) {
+  const container = document.getElementById('recent-list');
+  if (savings.length === 0) { container.innerHTML = '<p class="text-xs theme-text-secondary text-center py-4">ยังไม่มีรายการออม</p>'; return; }
+  const recent = [...savings].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 5);
+  container.innerHTML = recent.map(s => `
+    <div class="flex items-center justify-between py-2 border-b" style="border-color:var(--border);">
+      <div class="flex items-center gap-2">
+        <span class="text-lg">${getCategoryIcon(s.category)}</span>
+        <div>
+          <p class="text-sm font-semibold theme-text">${formatCurrency(s.amount)}</p>
+          <p class="text-[10px] theme-text-secondary">${s.category}${s.note ? ' • ' + s.note : ''}</p>
+        </div>
+      </div>
+      <span class="text-[10px] theme-text-secondary">${formatDate(s.date)}</span>
+    </div>`).join('');
+}
+
+function getCategoryIcon(cat) {
+  const icons = { 'ทั่วไป': '💵', 'เงินเดือน': '💼', 'โบนัส': '🎁', 'ฟรีแลนซ์': '💻', 'ของขวัญ': '🎀', 'อื่นๆ': '📦' };
+  return icons[cat] || '💰';
+}
+function formatDate(d) {
+  const date = new Date(d);
+  return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear() + 543}`;
+}
+
+// ============ HISTORY ============
+function renderHistory() {
+  const data = getUserData();
+  const filter = document.getElementById('history-filter').value;
+  const sort = document.getElementById('history-sort').value;
+  let items = [...data.savings];
+  if (filter !== 'all') items = items.filter(s => s.category === filter);
+  if (sort === 'newest') items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  else if (sort === 'oldest') items.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+  else if (sort === 'highest') items.sort((a, b) => b.amount - a.amount);
+  else items.sort((a, b) => a.amount - b.amount);
+  const container = document.getElementById('history-list');
+  if (items.length === 0) { container.innerHTML = '<p class="text-xs theme-text-secondary text-center py-8">ไม่มีรายการที่ตรงกัน</p>'; return; }
+  container.innerHTML = items.map((s, i) => `
+    <div class="theme-card rounded-xl p-3 animate-slide-in" style="animation-delay:${i * 0.05}s; opacity:0;">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="text-xl">${getCategoryIcon(s.category)}</span>
+          <div>
+            <p class="text-sm font-bold theme-text">${formatCurrency(s.amount)}</p>
+            <p class="text-[10px] theme-text-secondary">${s.category} • ${formatDate(s.date)}</p>
+            ${s.note ? `<p class="text-[10px] theme-text-secondary">${s.note}</p>` : ''}
+          </div>
+        </div>
+        <div class="flex gap-1">
+          <button onclick="editSaving('${s.id}')" class="p-1.5 rounded-lg hover:bg-indigo-500/20 transition text-indigo-400"><i data-lucide="edit-2" style="width:14px;height:14px;"></i></button>
+          <button onclick="confirmDeleteSaving('${s.id}')" class="p-1.5 rounded-lg hover:bg-red-500/20 transition text-red-400"><i data-lucide="trash-2" style="width:14px;height:14px;"></i></button>
+        </div>
+      </div>
+    </div>`).join('');
+  lucide.createIcons();
+}
+
+function confirmDeleteSaving(id) {
+  showModal('ลบรายการ', 'คุณต้องการลบรายการออมนี้หรือไม่?', [
+    { label: 'ยกเลิก', action: 'hideModal()' },
+    { label: 'ลบ', action: `deleteSaving('${id}')`, danger: true }
+  ]);
+}
+function deleteSaving(id) {
+  hideModal();
+  const data = getUserData();
+  data.savings = data.savings.filter(s => s.id !== id);
+  saveUserData(data);
+  renderHistory();
+  showToast('ลบรายการสำเร็จ');
+}
+
+function editSaving(id) {
+  const data = getUserData();
+  const item = data.savings.find(s => s.id === id);
+  if (!item) return;
+  showModal('แก้ไขรายการ', `
+    <div class="space-y-3 text-left">
+      <div><label class="text-xs theme-text-secondary block mb-1" for="edit-amount">จำนวนเงิน</label><input id="edit-amount" type="number" value="${item.amount}" class="w-full theme-input rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></div>
+      <div><label class="text-xs theme-text-secondary block mb-1" for="edit-date">วันที่</label><input id="edit-date" type="date" value="${item.date}" class="w-full theme-input rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></div>
+      <div><label class="text-xs theme-text-secondary block mb-1" for="edit-note">หมายเหตุ</label><input id="edit-note" type="text" value="${item.note || ''}" class="w-full theme-input rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></div>
+    </div>
+  `, [
+    { label: 'ยกเลิก', action: 'hideModal()' },
+    { label: 'บันทึก', action: `saveEditSaving('${id}')`, primary: true }
+  ]);
+}
+function saveEditSaving(id) {
+  const amount = parseFloat(document.getElementById('edit-amount').value);
+  const date = document.getElementById('edit-date').value;
+  const note = document.getElementById('edit-note').value.trim();
+  if (!amount || amount <= 0) { showToast('จำนวนเงินไม่ถูกต้อง', 'error'); return; }
+  const data = getUserData();
+  const item = data.savings.find(s => s.id === id);
+  if (item) { item.amount = amount; item.date = date; item.note = note; }
+  saveUserData(data);
+  hideModal();
+  renderHistory();
+  showToast('แก้ไขสำเร็จ ✅');
+}
+
+// ============ GOALS ============
+function handleSetGoal() {
+  const amount = parseFloat(document.getElementById('goal-amount').value);
+  const name = document.getElementById('goal-name').value.trim();
+  if (!amount || amount <= 0) { showToast('กรุณาใส่จำนวนเงินเป้าหมาย', 'error'); return; }
+  if (!name) { showToast('กรุณาใส่ชื่อเป้าหมาย', 'error'); return; }
+  const data = getUserData();
+  data.goal = { amount, name };
+  saveUserData(data);
+  showToast(`ตั้งเป้าหมาย "${name}" สำเร็จ! 🎯`);
+  renderGoals();
+}
+
+function handleDeleteGoal() {
+  showModal('ลบเป้าหมาย', 'คุณต้องการลบเป้าหมายนี้หรือไม่?', [
+    { label: 'ยกเลิก', action: 'hideModal()' },
+    { label: 'ลบ', action: 'confirmDeleteGoal()', danger: true }
+  ]);
+}
+function confirmDeleteGoal() {
+  hideModal();
+  const data = getUserData();
+  data.goal = null;
+  saveUserData(data);
+  renderGoals();
+  showToast('ลบเป้าหมายแล้ว');
+}
+
+function renderGoals() {
+  const data = getUserData();
+  const card = document.getElementById('current-goal-card');
+  if (!data.goal) { card.classList.add('hidden'); return; }
+  card.classList.remove('hidden');
+  const total = data.savings.reduce((s, i) => s + i.amount, 0);
+  const pct = Math.min((total / data.goal.amount) * 100, 100);
+  document.getElementById('goal-card-name').textContent = data.goal.name;
+  document.getElementById('goal-card-current').textContent = formatCurrency(total);
+  document.getElementById('goal-card-target').textContent = formatCurrency(data.goal.amount);
+  document.getElementById('goal-card-progress').style.width = pct + '%';
+  document.getElementById('goal-card-percent').textContent = pct.toFixed(1) + '%';
+  lucide.createIcons();
+}
+
+// ============ REPORT ============
+let reportMode = 'daily';
+function setReportMode(mode) {
+  reportMode = mode;
+  document.getElementById('btn-daily').className = mode === 'daily' ? 'flex-1 btn-primary text-white rounded-xl py-2 text-xs font-semibold' : 'flex-1 theme-card rounded-xl py-2 text-xs font-semibold theme-text';
+  document.getElementById('btn-monthly').className = mode === 'monthly' ? 'flex-1 btn-primary text-white rounded-xl py-2 text-xs font-semibold' : 'flex-1 theme-card rounded-xl py-2 text-xs font-semibold theme-text';
+  renderReport();
+}
+
+function renderReport() {
+  const data = getUserData();
+  const savings = data.savings;
+  const total = savings.reduce((s, i) => s + i.amount, 0);
+  document.getElementById('stat-total').textContent = formatCurrency(total);
+  document.getElementById('stat-count').textContent = savings.length;
+  document.getElementById('stat-avg').textContent = savings.length > 0 ? formatCurrency(Math.round(total / savings.length)) : '฿0';
+  document.getElementById('stat-max').textContent = savings.length > 0 ? formatCurrency(Math.max(...savings.map(s => s.amount))) : '฿0';
+
+  // Chart
+  const chartContainer = document.getElementById('report-chart');
+  if (savings.length === 0) { chartContainer.innerHTML = '<div class="text-center text-xs theme-text-secondary w-full py-8">ยังไม่มีข้อมูล</div>'; }
+  else if (reportMode === 'daily') {
+    document.getElementById('chart-title').textContent = 'กราฟรายวัน (7 วันล่าสุด)';
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const key = d.toISOString().split('T')[0];
+      const dayName = ['อา','จ','อ','พ','พฤ','ศ','ส'][d.getDay()];
+      const sum = savings.filter(s => s.date === key).reduce((a, b) => a + b.amount, 0);
+      days.push({ dayName, sum });
+    }
+    const maxVal = Math.max(...days.map(d => d.sum), 1);
+    chartContainer.innerHTML = days.map(d => {
+      const h = d.sum > 0 ? Math.max((d.sum / maxVal) * 85, 4) : 2;
+      return `<div class="flex-1 flex flex-col items-center justify-end h-full gap-1">
+        ${d.sum > 0 ? `<span class="text-[8px] text-indigo-400 font-bold">${formatNumber(d.sum)}</span>` : ''}
+        <div class="w-full rounded-t-md chart-bar bg-gradient-to-t from-indigo-600 to-purple-400" style="height:${h}%;min-height:2px;"></div>
+        <span class="text-[9px] theme-text-secondary">${d.dayName}</span>
+      </div>`;
+    }).join('');
+  } else {
+    document.getElementById('chart-title').textContent = 'กราฟรายเดือน (6 เดือนล่าสุด)';
+    const months = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(); d.setMonth(d.getMonth() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+      const monthNames = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+      const sum = savings.filter(s => s.date.startsWith(key)).reduce((a, b) => a + b.amount, 0);
+      months.push({ name: monthNames[d.getMonth()], sum });
+    }
+    const maxVal = Math.max(...months.map(m => m.sum), 1);
+    chartContainer.innerHTML = months.map(m => {
+      const h = m.sum > 0 ? Math.max((m.sum / maxVal) * 85, 4) : 2;
+      return `<div class="flex-1 flex flex-col items-center justify-end h-full gap-1">
+        ${m.sum > 0 ? `<span class="text-[8px] text-indigo-400 font-bold">${formatNumber(m.sum)}</span>` : ''}
+        <div class="w-full rounded-t-md chart-bar bg-gradient-to-t from-purple-600 to-pink-400" style="height:${h}%;min-height:2px;"></div>
+        <span class="text-[9px] theme-text-secondary">${m.name}</span>
+      </div>`;
+    }).join('');
+  }
+
+  // Category breakdown
+  const catContainer = document.getElementById('category-breakdown');
+  if (savings.length === 0) { catContainer.innerHTML = '<p class="text-xs theme-text-secondary text-center py-4">ยังไม่มีข้อมูล</p>'; }
+  else {
+    const cats = {};
+    savings.forEach(s => { cats[s.category] = (cats[s.category] || 0) + s.amount; });
+    const sorted = Object.entries(cats).sort((a, b) => b[1] - a[1]);
+    const colors = ['from-indigo-500 to-purple-500', 'from-purple-500 to-pink-500', 'from-pink-500 to-red-500', 'from-amber-500 to-orange-500', 'from-green-500 to-teal-500', 'from-blue-500 to-cyan-500'];
+    catContainer.innerHTML = sorted.map(([cat, amount], i) => {
+      const pct = (amount / total * 100).toFixed(1);
+      return `<div class="flex items-center gap-3">
+        <span class="text-lg">${getCategoryIcon(cat)}</span>
+        <div class="flex-1">
+          <div class="flex justify-between text-xs mb-1"><span class="theme-text font-semibold">${cat}</span><span class="theme-text-secondary">${formatCurrency(amount)} (${pct}%)</span></div>
+          <div class="w-full h-1.5 rounded-full" style="background:var(--border);"><div class="h-full rounded-full bg-gradient-to-r ${colors[i % colors.length]} progress-bar" style="width:${pct}%;"></div></div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+// ============ SETTINGS ============
+function handleUpdateProfile() {
+  const name = document.getElementById('settings-name').value.trim();
+  if (!name) { showToast('กรุณาใส่ชื่อ', 'error'); return; }
+  const data = getUserData();
+  data.name = name;
+  saveUserData(data);
+  showToast('บันทึกข้อมูลสำเร็จ ✅');
+  document.getElementById('user-greeting').textContent = name;
+}
+
+function handleChangePassword() {
+  const oldPass = document.getElementById('settings-oldpass').value;
+  const newPass = document.getElementById('settings-newpass').value;
+  const data = getUserData();
+  if (oldPass !== data.password) { showToast('รหัสผ่านเดิมไม่ถูกต้อง', 'error'); return; }
+  if (newPass.length < 6) { showToast('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัว', 'error'); return; }
+  data.password = newPass;
+  saveUserData(data);
+  document.getElementById('settings-oldpass').value = '';
+  document.getElementById('settings-newpass').value = '';
+  showToast('เปลี่ยนรหัสผ่านสำเร็จ 🔑');
+}
+
+function handleResetData() {
+  showModal('⚠️ ล้างข้อมูลทั้งหมด', 'การกระทำนี้จะลบข้อมูลการออมและเป้าหมายทั้งหมด ไม่สามารถกู้คืนได้!', [
+    { label: 'ยกเลิก', action: 'hideModal()' },
+    { label: 'ล้างข้อมูล', action: 'confirmResetData()', danger: true }
+  ]);
+}
+function confirmResetData() {
+  hideModal();
+  const data = getUserData();
+  data.savings = [];
+  data.goal = null;
+  saveUserData(data);
+  switchSection('dashboard');
+  showToast('ล้างข้อมูลทั้งหมดแล้ว');
+}
+
+// ============ INIT ============
+const defaultConfig = {
+  app_title: 'ระบบออมเงิน',
+  background_color: '#0a0a1a',
+  surface_color: '#1e1b4b',
+  text_color: '#f1f5f9',
+  accent_color: '#818cf8',
+  secondary_accent_color: '#a78bfa',
+  font_family: 'Noto Sans Thai',
+  font_size: 14
+};
+
+function applyConfig(config) {
+  const title = config.app_title || defaultConfig.app_title;
+  const el = document.getElementById('app-title-login');
+  if (el) el.textContent = title;
+}
+
+if (window.elementSdk) {
+  window.elementSdk.init({
+    defaultConfig,
+    onConfigChange: async (config) => { applyConfig(config); },
+    mapToCapabilities: (config) => ({
+      recolorables: [
+        { get: () => config.background_color || defaultConfig.background_color, set: (v) => { config.background_color = v; window.elementSdk.setConfig({ background_color: v }); } },
+        { get: () => config.surface_color || defaultConfig.surface_color, set: (v) => { config.surface_color = v; window.elementSdk.setConfig({ surface_color: v }); } },
+        { get: () => config.text_color || defaultConfig.text_color, set: (v) => { config.text_color = v; window.elementSdk.setConfig({ text_color: v }); } },
+        { get: () => config.accent_color || defaultConfig.accent_color, set: (v) => { config.accent_color = v; window.elementSdk.setConfig({ accent_color: v }); } },
+        { get: () => config.secondary_accent_color || defaultConfig.secondary_accent_color, set: (v) => { config.secondary_accent_color = v; window.elementSdk.setConfig({ secondary_accent_color: v }); } }
+      ],
+      borderables: [],
+      fontEditable: {
+        get: () => config.font_family || defaultConfig.font_family,
+        set: (v) => { config.font_family = v; window.elementSdk.setConfig({ font_family: v }); }
+      },
+      fontSizeable: {
+        get: () => config.font_size || defaultConfig.font_size,
+        set: (v) => { config.font_size = v; window.elementSdk.setConfig({ font_size: v }); }
+      }
+    }),
+    mapToEditPanelValues: (config) => new Map([
+      ['app_title', config.app_title || defaultConfig.app_title]
+    ])
+  });
+}
+
+// Auto-login if session exists
+if (appState.currentUser && appState.users[appState.currentUser]) {
+  enterApp();
+} else {
+  applyTheme();
+}
+
+document.getElementById('add-date').value = new Date().toISOString().split('T')[0];
+lucide.createIcons();
+</script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9dc904fb54927329',t:'MTc3MzU1MTUwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
