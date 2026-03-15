@@ -77,7 +77,8 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
  </head>
  <body class="h-full dark">
-  <div id="app" class="h-full w-full overflow-auto theme-bg" style="max-width:480px; margin:0 auto; position:relative;"><!-- Toast Container -->
+  <div id="app" class="h-full w-full overflow-auto theme-bg" style="max-width:480px; margin:0 auto; position:relative;">
+   <!-- Toast Container -->
    <div id="toast-container" class="fixed top-4 left-1/2 -translate-x-1/2 z-[200] flex flex-col gap-2" style="max-width:400px;"></div><!-- Modal Container -->
    <div id="modal-overlay" class="fixed inset-0 z-[100] modal-overlay hidden items-center justify-center p-4">
     <div id="modal-content" class="theme-card rounded-2xl p-6 w-full max-w-sm animate-scale-in"></div>
@@ -92,13 +93,17 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
       <p class="theme-text-secondary mt-2 text-sm">เริ่มต้นออมเงินวันนี้ เพื่ออนาคตที่ดีกว่า</p>
      </div>
      <div class="space-y-4 animate-fade-in-up stagger-2">
-      <div><label class="text-sm theme-text-secondary mb-1 block" for="login-username">ชื่อผู้ใช้</label> <input id="login-username" type="text" placeholder="ใส่ชื่อผู้ใช้" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      <div>
+       <label class="text-sm theme-text-secondary mb-1 block" for="login-username">ชื่อผู้ใช้</label> <input id="login-username" type="text" placeholder="ใส่ชื่อผู้ใช้" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
       </div>
-      <div><label class="text-sm theme-text-secondary mb-1 block" for="login-password">รหัสผ่าน</label>
-       <div class="relative"><input id="login-password" type="password" placeholder="ใส่รหัสผ่าน" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition pr-10"> <button onclick="togglePassword('login-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 theme-text-secondary hover:text-indigo-400 transition" aria-label="Toggle password visibility"><i data-lucide="eye" style="width:18px;height:18px;"></i></button>
+      <div>
+       <label class="text-sm theme-text-secondary mb-1 block" for="login-password">รหัสผ่าน</label>
+       <div class="relative">
+        <input id="login-password" type="password" placeholder="ใส่รหัสผ่าน" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition pr-10"> <button onclick="togglePassword('login-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 theme-text-secondary hover:text-indigo-400 transition" aria-label="Toggle password visibility"><i data-lucide="eye" style="width:18px;height:18px;"></i></button>
        </div>
       </div><button onclick="handleLogin()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">เข้าสู่ระบบ</button>
-      <div class="flex justify-between text-xs"><button onclick="showPage('register')" class="text-indigo-400 hover:text-indigo-300 transition">สมัครสมาชิก</button> <button onclick="showPage('forgot')" class="theme-text-secondary hover:text-indigo-400 transition">ลืมรหัสผ่าน?</button>
+      <div class="flex justify-between text-xs">
+       <button onclick="showPage('register')" class="text-indigo-400 hover:text-indigo-300 transition">สมัครสมาชิก</button> <button onclick="showPage('forgot')" class="theme-text-secondary hover:text-indigo-400 transition">ลืมรหัสผ่าน?</button>
       </div>
      </div>
     </div>
@@ -113,19 +118,26 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
       <p class="theme-text-secondary mt-1 text-sm">สร้างบัญชีเพื่อเริ่มออมเงิน</p>
      </div>
      <div class="space-y-4 animate-fade-in-up stagger-2">
-      <div><label class="text-sm theme-text-secondary mb-1 block" for="reg-name">ชื่อที่แสดง</label> <input id="reg-name" type="text" placeholder="ชื่อของคุณ" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      <div>
+       <label class="text-sm theme-text-secondary mb-1 block" for="reg-name">ชื่อที่แสดง</label> <input id="reg-name" type="text" placeholder="ชื่อของคุณ" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
       </div>
-      <div><label class="text-sm theme-text-secondary mb-1 block" for="reg-username">ชื่อผู้ใช้</label> <input id="reg-username" type="text" placeholder="ตั้งชื่อผู้ใช้" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      <div>
+       <label class="text-sm theme-text-secondary mb-1 block" for="reg-username">ชื่อผู้ใช้</label> <input id="reg-username" type="text" placeholder="ตั้งชื่อผู้ใช้" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
       </div>
-      <div><label class="text-sm theme-text-secondary mb-1 block" for="reg-password">รหัสผ่าน</label>
-       <div class="relative"><input id="reg-password" type="password" placeholder="ตั้งรหัสผ่าน (6 ตัวขึ้นไป)" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition pr-10"> <button onclick="togglePassword('reg-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 theme-text-secondary hover:text-indigo-400 transition" aria-label="Toggle password visibility"><i data-lucide="eye" style="width:18px;height:18px;"></i></button>
+      <div>
+       <label class="text-sm theme-text-secondary mb-1 block" for="reg-password">รหัสผ่าน</label>
+       <div class="relative">
+        <input id="reg-password" type="password" placeholder="ตั้งรหัสผ่าน (6 ตัวขึ้นไป)" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition pr-10"> <button onclick="togglePassword('reg-password', this)" class="absolute right-3 top-1/2 -translate-y-1/2 theme-text-secondary hover:text-indigo-400 transition" aria-label="Toggle password visibility"><i data-lucide="eye" style="width:18px;height:18px;"></i></button>
        </div>
       </div>
-      <div><label class="text-sm theme-text-secondary mb-1 block" for="reg-confirm">ยืนยันรหัสผ่าน</label>
-       <div class="relative"><input id="reg-confirm" type="password" placeholder="ใส่รหัสผ่านอีกครั้ง" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition pr-10"> <button onclick="togglePassword('reg-confirm', this)" class="absolute right-3 top-1/2 -translate-y-1/2 theme-text-secondary hover:text-indigo-400 transition" aria-label="Toggle password visibility"><i data-lucide="eye" style="width:18px;height:18px;"></i></button>
+      <div>
+       <label class="text-sm theme-text-secondary mb-1 block" for="reg-confirm">ยืนยันรหัสผ่าน</label>
+       <div class="relative">
+        <input id="reg-confirm" type="password" placeholder="ใส่รหัสผ่านอีกครั้ง" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition pr-10"> <button onclick="togglePassword('reg-confirm', this)" class="absolute right-3 top-1/2 -translate-y-1/2 theme-text-secondary hover:text-indigo-400 transition" aria-label="Toggle password visibility"><i data-lucide="eye" style="width:18px;height:18px;"></i></button>
        </div>
       </div>
-      <div><label class="text-sm theme-text-secondary mb-1 block" for="reg-security">คำถามรักษาความปลอดภัย</label> <input id="reg-security" type="text" placeholder="อาหารจานโปรดของคุณคืออะไร?" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      <div>
+       <label class="text-sm theme-text-secondary mb-1 block" for="reg-security">คำถามรักษาความปลอดภัย</label> <input id="reg-security" type="text" placeholder="อาหารจานโปรดของคุณคืออะไร?" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
       </div><button onclick="handleRegister()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">สมัครสมาชิก</button> <button onclick="showPage('login')" class="w-full text-center text-sm text-indigo-400 hover:text-indigo-300 transition">กลับเข้าสู่ระบบ</button>
      </div>
     </div>
@@ -140,27 +152,33 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
       <p class="theme-text-secondary mt-1 text-sm">ตอบคำถามรักษาความปลอดภัยเพื่อรีเซ็ตรหัส</p>
      </div>
      <div class="space-y-4 animate-fade-in-up stagger-2">
-      <div><label class="text-sm theme-text-secondary mb-1 block" for="forgot-username">ชื่อผู้ใช้</label> <input id="forgot-username" type="text" placeholder="ใส่ชื่อผู้ใช้ของคุณ" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      <div>
+       <label class="text-sm theme-text-secondary mb-1 block" for="forgot-username">ชื่อผู้ใช้</label> <input id="forgot-username" type="text" placeholder="ใส่ชื่อผู้ใช้ของคุณ" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
       </div>
-      <div><label class="text-sm theme-text-secondary mb-1 block" for="forgot-answer">คำตอบคำถามรักษาความปลอดภัย</label> <input id="forgot-answer" type="text" placeholder="อาหารจานโปรดของคุณคืออะไร?" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+      <div>
+       <label class="text-sm theme-text-secondary mb-1 block" for="forgot-answer">คำตอบคำถามรักษาความปลอดภัย</label> <input id="forgot-answer" type="text" placeholder="อาหารจานโปรดของคุณคืออะไร?" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
       </div>
       <div id="new-password-section" class="hidden space-y-4">
-       <div><label class="text-sm theme-text-secondary mb-1 block" for="forgot-newpass">รหัสผ่านใหม่</label> <input id="forgot-newpass" type="password" placeholder="ตั้งรหัสผ่านใหม่" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       <div>
+        <label class="text-sm theme-text-secondary mb-1 block" for="forgot-newpass">รหัสผ่านใหม่</label> <input id="forgot-newpass" type="password" placeholder="ตั้งรหัสผ่านใหม่" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
        </div><button onclick="handleResetPassword()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">เปลี่ยนรหัสผ่าน</button>
       </div><button id="verify-btn" onclick="handleVerifySecurity()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">ตรวจสอบ</button> <button onclick="showPage('login')" class="w-full text-center text-sm text-indigo-400 hover:text-indigo-300 transition">กลับเข้าสู่ระบบ</button>
      </div>
     </div>
    </div><!-- ==================== MAIN APP (after login) ==================== -->
    <div id="page-app" class="page h-full" style="display:none;">
-    <div class="flex-1 overflow-auto pb-20"><!-- Dashboard Section -->
-     <section id="section-dashboard" class="app-section p-4 space-y-4"><!-- Header -->
+    <div class="flex-1 overflow-auto pb-20">
+     <!-- Dashboard Section -->
+     <section id="section-dashboard" class="app-section p-4 space-y-4">
+      <!-- Header -->
       <header class="flex items-center justify-between pt-2 animate-fade-in-up">
        <div>
         <p class="text-xs theme-text-secondary">สวัสดี 👋</p>
         <h2 id="user-greeting" class="text-lg font-bold theme-text font-display">ผู้ใช้</h2>
        </div>
        <div class="flex items-center gap-2">
-        <div id="rank-badge-header" class="rank-badge px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1" style="--rank-from:#cd7f32;--rank-to:#b8860b;"><span id="rank-icon-header">🥉</span> <span id="rank-name-header">บรอนซ์</span>
+        <div id="rank-badge-header" class="rank-badge px-3 py-1 rounded-full text-xs font-bold text-white flex items-center gap-1" style="--rank-from:#cd7f32;--rank-to:#b8860b;">
+         <span id="rank-icon-header">🥉</span> <span id="rank-name-header">บรอนซ์</span>
         </div>
        </div>
       </header><!-- Total Savings Card -->
@@ -169,7 +187,8 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
         <p class="text-xs theme-text-secondary mb-1">เงินออมทั้งหมด</p>
         <p id="total-savings" class="text-3xl font-black font-display bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">฿0</p>
         <div class="mt-3">
-         <div class="flex justify-between text-xs mb-1"><span class="theme-text-secondary">เป้าหมาย: <span id="goal-display-dash">฿0</span></span> <span id="goal-percent-dash" class="text-indigo-400 font-semibold">0%</span>
+         <div class="flex justify-between text-xs mb-1">
+          <span class="theme-text-secondary">เป้าหมาย: <span id="goal-display-dash">฿0</span></span> <span id="goal-percent-dash" class="text-indigo-400 font-semibold">0%</span>
          </div>
          <div class="w-full h-2 rounded-full" style="background:var(--border);">
           <div id="goal-progress-dash" class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 progress-bar" style="width:0%;"></div>
@@ -188,30 +207,26 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
         <div id="rank-progress-bar" class="h-full rounded-full progress-bar" style="width:0%; background:linear-gradient(90deg,#cd7f32,#b8860b);"></div>
        </div>
        <div class="grid grid-cols-5 gap-1 mt-3">
-        <div class="text-center">
-         <span class="text-lg">🥉</span>
+        <div class="text-center"><span class="text-lg">🥉</span>
          <p class="text-[10px] theme-text-secondary">บรอนซ์</p>
         </div>
-        <div class="text-center">
-         <span class="text-lg">🥈</span>
+        <div class="text-center"><span class="text-lg">🥈</span>
          <p class="text-[10px] theme-text-secondary">ซิลเวอร์</p>
         </div>
-        <div class="text-center">
-         <span class="text-lg">🥇</span>
+        <div class="text-center"><span class="text-lg">🥇</span>
          <p class="text-[10px] theme-text-secondary">โกลด์</p>
         </div>
-        <div class="text-center">
-         <span class="text-lg">💎</span>
+        <div class="text-center"><span class="text-lg">💎</span>
          <p class="text-[10px] theme-text-secondary">แพลทินัม</p>
         </div>
-        <div class="text-center">
-         <span class="text-lg">👑</span>
+        <div class="text-center"><span class="text-lg">👑</span>
          <p class="text-[10px] theme-text-secondary">รีเจนท์</p>
         </div>
        </div>
       </div><!-- AI Analysis -->
       <div class="theme-card rounded-2xl p-4 animate-fade-in-up stagger-3">
-       <div class="flex items-center gap-2 mb-2"><span class="text-lg">🤖</span>
+       <div class="flex items-center gap-2 mb-2">
+        <span class="text-lg">🤖</span>
         <p class="text-sm font-semibold theme-text">AI วิเคราะห์การออม</p>
        </div>
        <p id="ai-analysis" class="text-xs theme-text-secondary leading-relaxed">เริ่มเพิ่มรายการออมเพื่อให้ AI วิเคราะห์พฤติกรรมการออมของคุณ</p>
@@ -239,13 +254,17 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
        <p class="text-xs theme-text-secondary mt-1">บันทึกเงินออมของคุณ</p>
       </header>
       <div class="theme-card rounded-2xl p-5 space-y-4 animate-fade-in-up stagger-1">
-       <div><label class="text-sm theme-text-secondary mb-1 block" for="add-amount">จำนวนเงิน (บาท)</label> <input id="add-amount" type="number" min="1" placeholder="0" class="w-full theme-input rounded-xl px-4 py-3 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 transition text-center">
+       <div>
+        <label class="text-sm theme-text-secondary mb-1 block" for="add-amount">จำนวนเงิน (บาท)</label> <input id="add-amount" type="number" min="1" placeholder="0" class="w-full theme-input rounded-xl px-4 py-3 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 transition text-center">
        </div>
-       <div><label class="text-sm theme-text-secondary mb-1 block" for="add-date">วันที่</label> <input id="add-date" type="date" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       <div>
+        <label class="text-sm theme-text-secondary mb-1 block" for="add-date">วันที่</label> <input id="add-date" type="date" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
        </div>
-       <div><label class="text-sm theme-text-secondary mb-1 block" for="add-category">หมวดหมู่</label> <select id="add-category" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"> <option value="ทั่วไป">💵 ทั่วไป</option> <option value="เงินเดือน">💼 เงินเดือน</option> <option value="โบนัส">🎁 โบนัส</option> <option value="ฟรีแลนซ์">💻 ฟรีแลนซ์</option> <option value="ของขวัญ">🎀 ของขวัญ</option> <option value="อื่นๆ">📦 อื่นๆ</option> </select>
+       <div>
+        <label class="text-sm theme-text-secondary mb-1 block" for="add-category">หมวดหมู่</label> <select id="add-category" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition"> <option value="ทั่วไป">💵 ทั่วไป</option> <option value="เงินเดือน">💼 เงินเดือน</option> <option value="โบนัส">🎁 โบนัส</option> <option value="ฟรีแลนซ์">💻 ฟรีแลนซ์</option> <option value="ของขวัญ">🎀 ของขวัญ</option> <option value="อื่นๆ">📦 อื่นๆ</option> </select>
        </div>
-       <div><label class="text-sm theme-text-secondary mb-1 block" for="add-note">หมายเหตุ (ไม่จำเป็น)</label> <input id="add-note" type="text" placeholder="เช่น เก็บจากค่าข้าวเที่ยง" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       <div>
+        <label class="text-sm theme-text-secondary mb-1 block" for="add-note">หมายเหตุ (ไม่จำเป็น)</label> <input id="add-note" type="text" placeholder="เช่น เก็บจากค่าข้าวเที่ยง" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
        </div><button onclick="handleAddSaving()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">💰 บันทึกการออม</button>
       </div>
      </section><!-- History Section -->
@@ -254,7 +273,8 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
        <h2 class="text-xl font-bold theme-text font-display">📋 ประวัติการออม</h2>
        <p class="text-xs theme-text-secondary mt-1">ดูรายการออมทั้งหมดของคุณ</p>
       </header>
-      <div class="flex gap-2 animate-fade-in-up stagger-1"><select id="history-filter" onchange="renderHistory()" class="flex-1 theme-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"> <option value="all">ทั้งหมด</option> <option value="ทั่วไป">💵 ทั่วไป</option> <option value="เงินเดือน">💼 เงินเดือน</option> <option value="โบนัส">🎁 โบนัส</option> <option value="ฟรีแลนซ์">💻 ฟรีแลนซ์</option> <option value="ของขวัญ">🎀 ของขวัญ</option> <option value="อื่นๆ">📦 อื่นๆ</option> </select> <select id="history-sort" onchange="renderHistory()" class="theme-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"> <option value="newest">ใหม่สุด</option> <option value="oldest">เก่าสุด</option> <option value="highest">มากสุด</option> <option value="lowest">น้อยสุด</option> </select>
+      <div class="flex gap-2 animate-fade-in-up stagger-1">
+       <select id="history-filter" onchange="renderHistory()" class="flex-1 theme-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"> <option value="all">ทั้งหมด</option> <option value="ทั่วไป">💵 ทั่วไป</option> <option value="เงินเดือน">💼 เงินเดือน</option> <option value="โบนัส">🎁 โบนัส</option> <option value="ฟรีแลนซ์">💻 ฟรีแลนซ์</option> <option value="ของขวัญ">🎀 ของขวัญ</option> <option value="อื่นๆ">📦 อื่นๆ</option> </select> <select id="history-sort" onchange="renderHistory()" class="theme-input rounded-xl px-3 py-2 text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500"> <option value="newest">ใหม่สุด</option> <option value="oldest">เก่าสุด</option> <option value="highest">มากสุด</option> <option value="lowest">น้อยสุด</option> </select>
       </div>
       <div id="history-list" class="space-y-2 animate-fade-in-up stagger-2">
        <p class="text-xs theme-text-secondary text-center py-8">ยังไม่มีรายการออม</p>
@@ -266,9 +286,11 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
        <p class="text-xs theme-text-secondary mt-1">ตั้งเป้าหมายเพื่อสร้างแรงบันดาลใจ</p>
       </header>
       <div class="theme-card rounded-2xl p-5 space-y-4 animate-fade-in-up stagger-1">
-       <div><label class="text-sm theme-text-secondary mb-1 block" for="goal-amount">เป้าหมายเงินออม (บาท)</label> <input id="goal-amount" type="number" min="1" placeholder="10000" class="w-full theme-input rounded-xl px-4 py-3 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 transition text-center">
+       <div>
+        <label class="text-sm theme-text-secondary mb-1 block" for="goal-amount">เป้าหมายเงินออม (บาท)</label> <input id="goal-amount" type="number" min="1" placeholder="10000" class="w-full theme-input rounded-xl px-4 py-3 text-lg font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500 transition text-center">
        </div>
-       <div><label class="text-sm theme-text-secondary mb-1 block" for="goal-name">ชื่อเป้าหมาย</label> <input id="goal-name" type="text" placeholder="เช่น ซื้อ iPhone, ท่องเที่ยว" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       <div>
+        <label class="text-sm theme-text-secondary mb-1 block" for="goal-name">ชื่อเป้าหมาย</label> <input id="goal-name" type="text" placeholder="เช่น ซื้อ iPhone, ท่องเที่ยว" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
        </div><button onclick="handleSetGoal()" class="w-full btn-primary text-white rounded-xl py-3 font-semibold text-sm">🎯 ตั้งเป้าหมาย</button>
       </div><!-- Current Goal Display -->
       <div id="current-goal-card" class="theme-card rounded-2xl p-5 animate-fade-in-up stagger-2 hidden">
@@ -293,7 +315,8 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
        <h2 class="text-xl font-bold theme-text font-display">📊 รายงาน / กราฟ</h2>
        <p class="text-xs theme-text-secondary mt-1">ดูสถิติการออมของคุณ</p>
       </header>
-      <div class="flex gap-2 animate-fade-in-up stagger-1"><button onclick="setReportMode('daily')" id="btn-daily" class="flex-1 btn-primary text-white rounded-xl py-2 text-xs font-semibold">รายวัน</button> <button onclick="setReportMode('monthly')" id="btn-monthly" class="flex-1 theme-card rounded-xl py-2 text-xs font-semibold theme-text">รายเดือน</button>
+      <div class="flex gap-2 animate-fade-in-up stagger-1">
+       <button onclick="setReportMode('daily')" id="btn-daily" class="flex-1 btn-primary text-white rounded-xl py-2 text-xs font-semibold">รายวัน</button> <button onclick="setReportMode('monthly')" id="btn-monthly" class="flex-1 theme-card rounded-xl py-2 text-xs font-semibold theme-text">รายเดือน</button>
       </div><!-- Stats Cards -->
       <div class="grid grid-cols-2 gap-3 animate-fade-in-up stagger-2">
        <div class="theme-card rounded-xl p-3 text-center">
@@ -335,12 +358,14 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
       </header><!-- Profile Card -->
       <div class="theme-card rounded-2xl p-5 space-y-4 animate-fade-in-up stagger-1">
        <p class="text-sm font-semibold theme-text">👤 ข้อมูลผู้ใช้</p>
-       <div><label class="text-xs theme-text-secondary mb-1 block" for="settings-name">ชื่อที่แสดง</label> <input id="settings-name" type="text" class="w-full theme-input rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       <div>
+        <label class="text-xs theme-text-secondary mb-1 block" for="settings-name">ชื่อที่แสดง</label> <input id="settings-name" type="text" class="w-full theme-input rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
        </div><button onclick="handleUpdateProfile()" class="w-full btn-primary text-white rounded-xl py-2 text-sm font-semibold">บันทึกการเปลี่ยนแปลง</button>
       </div><!-- Theme Toggle -->
       <div class="theme-card rounded-2xl p-5 animate-fade-in-up stagger-2">
        <div class="flex items-center justify-between">
-        <div class="flex items-center gap-3"><span class="text-xl" id="theme-icon">🌙</span>
+        <div class="flex items-center gap-3">
+         <span class="text-xl" id="theme-icon">🌙</span>
          <div>
           <p class="text-sm font-semibold theme-text">โหมดสี</p>
           <p class="text-xs theme-text-secondary" id="theme-label">โหมดมืด</p>
@@ -351,9 +376,11 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
       </div><!-- Change Password -->
       <div class="theme-card rounded-2xl p-5 space-y-4 animate-fade-in-up stagger-3">
        <p class="text-sm font-semibold theme-text">🔒 เปลี่ยนรหัสผ่าน</p>
-       <div><label class="text-xs theme-text-secondary mb-1 block" for="settings-oldpass">รหัสผ่านเดิม</label> <input id="settings-oldpass" type="password" placeholder="ใส่รหัสผ่านเดิม" class="w-full theme-input rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       <div>
+        <label class="text-xs theme-text-secondary mb-1 block" for="settings-oldpass">รหัสผ่านเดิม</label> <input id="settings-oldpass" type="password" placeholder="ใส่รหัสผ่านเดิม" class="w-full theme-input rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
        </div>
-       <div><label class="text-xs theme-text-secondary mb-1 block" for="settings-newpass">รหัสผ่านใหม่</label> <input id="settings-newpass" type="password" placeholder="ใส่รหัสผ่านใหม่" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+       <div>
+        <label class="text-xs theme-text-secondary mb-1 block" for="settings-newpass">รหัสผ่านใหม่</label> <input id="settings-newpass" type="password" placeholder="ใส่รหัสผ่านใหม่" class="w-full theme-input rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
        </div><button onclick="handleChangePassword()" class="w-full btn-primary text-white rounded-xl py-2 text-sm font-semibold">เปลี่ยนรหัสผ่าน</button>
       </div><!-- Danger Zone -->
       <div class="theme-card rounded-2xl p-5 space-y-3 animate-fade-in-up stagger-4 border-red-500/20">
@@ -362,7 +389,8 @@ input::placeholder { color: var(--text-secondary); opacity: 0.6; }
      </section>
     </div><!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full theme-nav py-2 px-2 z-50" style="max-width:480px;" aria-label="Main navigation">
-     <div class="flex justify-around items-center"><button onclick="switchSection('dashboard')" class="nav-item active flex flex-col items-center gap-0.5 p-1 transition-colors" data-section="dashboard"> <i data-lucide="home" style="width:20px;height:20px;"></i> <span class="text-[10px]">หน้าหลัก</span>
+     <div class="flex justify-around items-center">
+      <button onclick="switchSection('dashboard')" class="nav-item active flex flex-col items-center gap-0.5 p-1 transition-colors" data-section="dashboard"> <i data-lucide="home" style="width:20px;height:20px;"></i> <span class="text-[10px]">หน้าหลัก</span>
        <div class="nav-dot w-1 h-1 rounded-full bg-indigo-400"></div></button> <button onclick="switchSection('add')" class="nav-item flex flex-col items-center gap-0.5 p-1 theme-text-secondary transition-colors" data-section="add"> <i data-lucide="plus-circle" style="width:20px;height:20px;"></i> <span class="text-[10px]">เพิ่ม</span>
        <div class="nav-dot w-1 h-1 rounded-full bg-indigo-400"></div></button> <button onclick="switchSection('history')" class="nav-item flex flex-col items-center gap-0.5 p-1 theme-text-secondary transition-colors" data-section="history"> <i data-lucide="list" style="width:20px;height:20px;"></i> <span class="text-[10px]">ประวัติ</span>
        <div class="nav-dot w-1 h-1 rounded-full bg-indigo-400"></div></button> <button onclick="switchSection('goals')" class="nav-item flex flex-col items-center gap-0.5 p-1 theme-text-secondary transition-colors" data-section="goals"> <i data-lucide="target" style="width:20px;height:20px;"></i> <span class="text-[10px]">เป้าหมาย</span>
@@ -501,6 +529,8 @@ function handleVerifySecurity() {
   if (user.security !== answer) { showToast('คำตอบไม่ถูกต้อง', 'error'); return; }
   document.getElementById('new-password-section').classList.remove('hidden');
   document.getElementById('verify-btn').classList.add('hidden');
+  document.getElementById('forgot-answer').disabled = true;
+  document.getElementById('forgot-username').disabled = true;
   showToast('ยืนยันสำเร็จ! ตั้งรหัสผ่านใหม่ได้เลย', 'info');
 }
 
@@ -1024,5 +1054,5 @@ if (appState.currentUser && appState.users[appState.currentUser]) {
 document.getElementById('add-date').value = new Date().toISOString().split('T')[0];
 lucide.createIcons();
 </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9dc904fb54927329',t:'MTc3MzU1MTUwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9dc91186e1727336',t:'MTc3MzU1MjAyMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
